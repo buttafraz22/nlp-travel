@@ -45,7 +45,6 @@ def initialize_vector_store():
     
     return vectorstore, embed
 
-# Initialize Language Model and QA Chain
 @st.cache_resource
 def initialize_rag_pipeline():
     """
