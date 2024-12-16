@@ -1,0 +1,12 @@
+streamlit
+langchain
+python-dotenv
+tiktoken
+langchain-pinecone
+langchainhub
+pandas
+langchain_community
+langchain-google-genai
+google-generativeai
+pinecone-client
+tavily-python
