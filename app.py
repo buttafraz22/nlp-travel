@@ -122,17 +122,26 @@ def initialize_rag_pipeline():
     return agent_executor
 
 # Sidebar for additional information
-st.sidebar.header("🤖 About Travel Companion")
-st.sidebar.info(
-    "This AI chatbot is powered by Google's Gemini model and Pinecone vector search. "
-    "It can help you with detailed travel-related queries based on a comprehensive travel guide."
-)
+with st.sidebar:
+    st.sidebar.header("🤖 About Travel Companion")
+    st.sidebar.info(
+        "This AI chatbot is powered by Google's Gemini model and Pinecone vector search. "
+        "It can help you with detailed travel-related queries based on a comprehensive travel guide."
+    )
 
-st.sidebar.header("🤖 About Travel Companion")
-st.sidebar.info(
-    "The locations covered by the chatbot are Primarily Italy. "
-    "It has also a <detailed architecture here>."
-)
+    st.sidebar.subheader("🤖 Travel Companion's Architecture")
+    st.markdown("""
+        The locations covered by the chatbot are primarily Italy.
+        The chatbot works on dual RAG (multimodal RAG) architecture, where the primary agent hits up information
+        in the database, and if in case the primary fails, the secondary uses the internet to search the relevant information.
+    """)
+
+    st.sidebar.subheader("About the Developer")
+    st.markdown("""
+    Developed by: 2021-CS-12  
+    Supervisor: Prof. Dr. Usman Ghani Khan  
+    Course: Natural Language Processing
+    """)
 
 # Main chat interface
 def main():
@@ -145,40 +154,51 @@ def main():
 
     # Chat input
     user_question = st.chat_input("Ask me anything about travel!")
-    
+   
     # Display chat history
     for message in st.session_state.chat_history:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
-    
+   
     # Process new user question
     if user_question:
         # Add user message to chat history
         st.session_state.chat_history.append({
-            "role": "user", 
+            "role": "user",
             "content": user_question
         })
-        
+       
         # Display user message
         with st.chat_message("user"):
             st.markdown(user_question)
-        
+       
         # Generate response
         with st.chat_message("assistant"):
             with st.spinner("Preparing your travel insights..."):
                 try:
                     response = agent_executor.invoke({"input": user_question})
                     assistant_response = response.get('output', 'Sorry, I could not find specific information about your query.')
-                    
+                   
                     # Display assistant response
                     st.markdown(assistant_response)
-                    
+                   
+                    # Check if Tavily search was used and display URLs
+                    if 'intermediate_steps' in response:
+                        for step in response['intermediate_steps']:
+                            if step[0].tool == 'Tavily':
+                                # Parse Tavily results
+                                tavily_results = step[1]
+                                if isinstance(tavily_results, list) and len(tavily_results) > 0:
+                                    st.subheader("Top 5 Reference URLs")
+                                    for i, result in enumerate(tavily_results[:5], 1):
+                                        st.markdown(f"{i}. {result['url']}")
+                   
                     # Add to chat history
                     st.session_state.chat_history.append({
-                        "role": "assistant", 
+                        "role": "assistant",
                         "content": assistant_response
                     })
-                
+               
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
 
