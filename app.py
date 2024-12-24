@@ -14,19 +14,22 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Page configuration
-st.set_page_config(page_title="Travel Companion Chatbot", page_icon="✈️")
+st.set_page_config(page_title="Wander", page_icon="✈️")
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
 # Page title and description
-st.title("🌍 Travel Companion Chatbot")
+st.title("🌍 Wander: Your Travel Buddy")
 st.write("Your AI-powered travel guide ready to answer all your travel queries!")
 
 # Initialize Pinecone Vector Store
 @st.cache_resource
 def initialize_vector_store():
+    """
+    Initialize vector store and embeddings as a singleton resource.
+    """
     # Use environment variables for credentials
     index_name = "langchain-pinecone-travel-chatbot"
     
@@ -45,6 +48,11 @@ def initialize_vector_store():
 # Initialize Language Model and QA Chain
 @st.cache_resource
 def initialize_rag_pipeline():
+    """
+    Initialize RAG Pipeline by having conversation state of 5 messages.
+    The chain type is stuff, which concatenates all the information into
+    one string. This makes the retrieval part of the chain easier.
+    """
     # Initialize vector store
     vectorstore, embed = initialize_vector_store()
     
@@ -123,13 +131,13 @@ def initialize_rag_pipeline():
 
 # Sidebar for additional information
 with st.sidebar:
-    st.sidebar.header("🤖 About Travel Companion")
+    st.sidebar.header("🤖 About Wander")
     st.sidebar.info(
-        "This AI chatbot is powered by Google's Gemini model and Pinecone vector search. "
+        "Wander chatbot is powered by Google's Gemini model and Pinecone vector search. "
         "It can help you with detailed travel-related queries based on a comprehensive travel guide."
     )
 
-    st.sidebar.subheader("🤖 Travel Companion's Architecture")
+    st.sidebar.subheader("🤖 Wander's Architecture")
     st.markdown("""
         The locations covered by the chatbot are primarily Italy.
         The chatbot works on dual RAG (multimodal RAG) architecture, where the primary agent hits up information
