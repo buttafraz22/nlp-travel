@@ -13,8 +13,6 @@ from langchain import hub
 from dotenv import load_dotenv
 load_dotenv()
 
-# Page configuration
-st.set_page_config(page_title="Wander", page_icon="✈️")
 
 # Initialize session state for chat history
 if 'chat_history' not in st.session_state:
