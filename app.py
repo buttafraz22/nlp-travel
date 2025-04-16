@@ -22,7 +22,6 @@ if 'chat_history' not in st.session_state:
 
 # Page title and description
 st.title("🌍 Wander: Your Travel Buddy")
-st.write("Your AI-powered travel guide ready to answer all your travel queries!")
 
 # Initialize Pinecone Vector Store
 @st.cache_resource
