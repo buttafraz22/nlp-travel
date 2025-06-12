@@ -9,7 +9,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.prompts import PromptTemplate
 from langchain import hub
 
-# Load environment variables
+# Load environment variable
 from dotenv import load_dotenv
 load_dotenv()
 
